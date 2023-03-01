@@ -9,10 +9,10 @@ package projet_snake;
  * @author Pauline
  */
 public class Main {
-    
+
     public static void main(String[] args) {
         new Plateau();
-        
+
     }
-    
+
 }

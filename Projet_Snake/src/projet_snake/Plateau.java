@@ -4,12 +4,13 @@
  */
 package projet_snake;
 
-import javax.swing.JFrame;
+
+import javax.swing.*;
 
 public class Plateau extends JFrame {
 
     Plateau() {
-
+        
         Jeu plateau = new Jeu();
         this.add(plateau);
         this.setTitle("Jeu Snake");
@@ -18,7 +19,6 @@ public class Plateau extends JFrame {
         this.pack();
         this.setVisible(true);
         this.setLocationRelativeTo(null);
-        
-        // Musique 
+
     }
 }

@@ -15,8 +15,8 @@ public class Jeu extends JPanel implements ActionListener {
     static final int largeur = 600;
     static final int taille_case = 30; // possible de changer la valeur pour changer le nombre de cases
     static final int taille_jeu = (hauteur * largeur) / (taille_case * taille_case);
-    final int x[] = new int[taille_jeu];
-    final int y[] = new int[taille_jeu];
+    int x[] = new int[taille_jeu];
+    int y[] = new int[taille_jeu];
 
     int corps = 3;
     int fruits_manges;
@@ -42,8 +42,11 @@ public class Jeu extends JPanel implements ActionListener {
         enmarche = true;
         timer = new Timer(150, this);
         timer.start();
+        GestionMP3 g = new GestionMP3();
+        g.setnomMP3("musique_test.mp3");
+        g.start();
     }
-    
+
     public void Fruit() {
         fruit_x = random.nextInt((int) (largeur / taille_case)) * taille_case;
         fruit_y = random.nextInt((int) (hauteur / taille_case)) * taille_case;
@@ -76,7 +79,7 @@ public class Jeu extends JPanel implements ActionListener {
     }
 
     public void Collision() {
-
+        System.out.println("collision");
         // Vérifie si la tête du serpent se cogne avec le corps
         for (int i = corps; i > 0; i--) {
             if ((x[0] == x[i]) && (y[0] == y[i])) {
@@ -88,21 +91,28 @@ public class Jeu extends JPanel implements ActionListener {
         // Vérifie si la tête du serpent se cogne avec le bord gauche
         if (x[0] < 0) {
             enmarche = false;
+            FinJeu(enmarche);
         }
 
         // Vérifie si la tête du serpent se cogne avec le bord droit
         if (x[0] > largeur) {
             enmarche = false;
+            FinJeu(enmarche);
+
         }
 
         // Vérifie si la tête du serpent se cogne avec le bord haut
         if (y[0] < 0) {
             enmarche = false;
+            FinJeu(enmarche);
+
         }
 
         // Vérifie si la tête du serpent se cogne avec le bord bas
         if (y[0] > hauteur) {
             enmarche = false;
+            FinJeu(enmarche);
+
         }
 
         if (!enmarche) {
@@ -110,6 +120,50 @@ public class Jeu extends JPanel implements ActionListener {
         }
     }
 
+    public void Reinitialiser() {
+        x = new int[taille_jeu];
+        y = new int[taille_jeu];
+        x[0] = 0;
+        y[0] = 0;
+        x[1] = -1;
+        y[1] = 0;
+        x[2] = -2;
+        y[2] = 0;
+        timer.stop();
+        random = new Random();
+        this.setPreferredSize(new Dimension(hauteur, largeur));
+        this.setBackground(Color.black);
+        this.setFocusable(true);
+        this.addKeyListener(new MyKeyAdapter());
+        Debut();
+    }
+
+    public void FinJeu(boolean enmarche) { // Affichage fin du jeu + score
+        System.out.println("finn jeu");
+        int reponse = 0;
+        JOptionPane jop1 = new JOptionPane();
+
+        if (enmarche == false) {
+            jop1.showMessageDialog(null, "Votre score est de : " + fruits_manges, "Game Over", JOptionPane.INFORMATION_MESSAGE);
+
+            reponse = jop1.showConfirmDialog(null, "Voulez-vous recommencer ?", "Game Over", jop1.YES_NO_OPTION);
+        }
+
+        switch (reponse) {
+            case JOptionPane.YES_OPTION:
+
+                Reinitialiser();
+                break;
+            case JOptionPane.NO_OPTION:
+                // D'abord créer une fenêtre au début du jeu qui demande le nom du joueur et enregistrer les scores respectifs et afficher les meilleurs scores lorsque l'on clique sur NON
+                break;
+            case JOptionPane.CLOSED_OPTION:
+                System.exit(0);
+                break;
+
+        }
+
+    }
 
     @Override
     public void paintComponent(Graphics g) {
@@ -142,13 +196,9 @@ public class Jeu extends JPanel implements ActionListener {
                 }
             }
         } else {
-            FinJeu(g);
+            FinJeu(enmarche);
         }
 
-    }
-
-    public void FinJeu(Graphics g) { // Voir dans les TP que l'on a fait pour l'ouverture d'une fenêtre de fin de jeu
-        // Affichage fin du jeu + score
     }
 
     @Override
